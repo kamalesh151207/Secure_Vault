@@ -1,0 +1,29 @@
+services:
+  # 1. Backend Web Service (Node.js / Express API)
+  - type: web
+    name: secure-vault-backend
+    env: node
+    region: singapore
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        value: postgresql://postgres.ytlutuzkqhbhtjwnnpvf:secure_vault%40@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres
+      - key: ENABLE_MOCK_DB
+        value: "false"
+      - key: KMS_MASTER_KEY
+        generateValue: true
+      - key: HMAC_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+
+  # 2. Frontend Static Site
+  - type: static
+    name: secure-vault-frontend
+    buildCommand: echo "Static site ready"
+    staticPublishPath: ./frontend

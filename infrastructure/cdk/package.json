@@ -1,0 +1,19 @@
+{
+  "name": "secure-vault-cdk",
+  "version": "1.0.0",
+  "bin": {
+    "secure-vault-cdk": "bin/app.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "cdk": "cdk"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.110.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "typescript": "^5.2.2"
+  }
+}

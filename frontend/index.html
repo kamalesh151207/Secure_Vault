@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureVault -Cloud SQL Injection Protection</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Top Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div class="brand-text">
+          <h1>SecureVault</h1>
+          <p>AntiGravity Cloud Serverless Protection & Data Leak Prevention</p>
+        </div>
+      </div>
+      <div class="security-badge">
+        <div class="status-dot"></div>
+        Double-Layer Security Active
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('auth-tab')">🔑 Auth Hub</button>
+      <button class="tab-btn" onclick="switchTab('dashboard-tab')">📊 Decrypted Profile</button>
+      <button class="tab-btn" onclick="switchTab('pentest-tab')">🧪 Pen-Test & Capability Lab</button>
+      <button class="tab-btn" onclick="switchTab('logs-tab')">📜 Audit & Threat Logs</button>
+    </div>
+
+    <!-- TAB 1: AUTHENTICATION -->
+    <div id="auth-tab" class="tab-panel active">
+      <div class="grid-2">
+        <!-- Login Card -->
+        <div class="card">
+          <div class="card-title">
+            <span>User Login</span>
+            <span style="font-size:12px; color:var(--accent-cyan);">Parameterized PreparedStatement</span>
+          </div>
+          <form id="login-form">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="login-username" class="form-input" placeholder="e.g. alice_sec" required value="alice_sec">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="login-password" class="form-input" placeholder="••••••••" required value="Password123!">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Sign In to SecureVault</button>
+          </form>
+        </div>
+
+        <!-- Register Card -->
+        <div class="card">
+          <div class="card-title">
+            <span>Register Account</span>
+            <span style="font-size:12px; color:var(--accent-emerald);">AES-256-GCM Envelope Encryption</span>
+          </div>
+          <form id="register-form">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="reg-username" class="form-input" placeholder="Choose username" required value="alice_sec">
+            </div>
+            <div class="form-group">
+              <label>Email Address (PII Encrypted)</label>
+              <input type="email" id="reg-email" class="form-input" placeholder="alice@securevault.io" required value="alice@securevault.io">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required value="Password123!">
+            </div>
+            <button type="submit" class="btn btn-accent" style="width:100%;">Create Encrypted Account</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Auth Session Status -->
+      <div class="card">
+        <div class="card-title">Active JWT Session Token</div>
+        <div class="capability-token-display" id="jwt-token-display">No session token. Please login or register above.</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: DECRYPTED PROFILE -->
+    <div id="dashboard-tab" class="tab-panel">
+      <div class="card">
+        <div class="card-title">
+          <span>Decrypted Profile & Encryption Inspector</span>
+          <button class="btn btn-primary btn-sm" onclick="fetchUserData()">🔄 Refresh Data</button>
+        </div>
+        <div id="profile-content">
+          <p style="color:var(--text-muted);">Log in to view user profile decrypted on-the-fly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PEN-TESTING & CAPABILITY LAB -->
+    <div id="pentest-tab" class="tab-panel">
+      <!-- Capability Code Box -->
+      <div class="card">
+        <div class="card-title">
+          <span>Capability Code Generator (Write / Pen-Test Token)</span>
+          <span style="font-size:12px; color:var(--accent-amber);">HMAC-SHA256 Signed (5 min valid)</span>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
+          SecureVault requires an HMAC-signed time-limited token header <code>X-Capability-Token</code> to allow write queries (<code>INSERT/UPDATE/DELETE</code>) or execution of the pen-test injection sandbox.
+        </p>
+        <div class="capability-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>Current Capability Token Status:</strong>
+              <span id="capability-status-text" style="color:var(--accent-rose);">No Capability Token Active</span>
+            </div>
+            <button class="btn btn-accent btn-sm" onclick="generateCapabilityToken()">⚡ Request 5-Min Capability Code</button>
+          </div>
+          <div class="capability-token-display" id="capability-token-text">Click request button to issue HMAC signed capability token.</div>
+        </div>
+      </div>
+
+      <!-- Injection Simulator Card -->
+      <div class="card">
+        <div class="card-title">
+          <span>Live SQL Injection Pen-Test Sandbox</span>
+          <span style="font-size:12px; color:var(--accent-cyan);">Sandboxed Transaction ROLLBACK</span>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">
+          Select a preset injection payload or type a custom string to test SecureVault's double-layer security defenses.
+        </p>
+
+        <!-- Preset Buttons -->
+        <div class="preset-buttons">
+          <button class="btn btn-sm btn-danger" onclick="setPayload(&quot;' OR '1'='1&quot;)">💥 ' OR '1'='1</button>
+          <button class="btn btn-sm btn-danger" onclick="setPayload(&quot;admin' OR 1=1 --&quot;)">💥 admin' OR 1=1 --</button>
+          <button class="btn btn-sm btn-danger" onclick="setPayload(&quot;UNION SELECT username, encrypted_password FROM users--&quot;)">💥 UNION SELECT Exfiltration</button>
+          <button class="btn btn-sm btn-danger" onclick="setPayload(&quot;'; DROP TABLE users; --&quot;)">💥 DROP TABLE Stacked</button>
+          <button class="btn btn-sm btn-accent" onclick="setPayload(&quot;alice_sec&quot;)">✅ Safe Input: alice_sec</button>
+        </div>
+
+        <form id="pentest-form">
+          <div class="form-group">
+            <label>SQL Test Payload String</label>
+            <textarea id="pentest-payload" class="form-input" required placeholder="Enter SQL payload string to test...">' OR '1'='1</textarea>
+          </div>
+          <button type="submit" class="btn btn-danger" style="width:100%;">🚀 Execute Sandboxed Pen-Test Attack</button>
+        </form>
+
+        <div style="margin-top:20px;">
+          <div style="font-weight:600; margin-bottom:8px;">Defense Diagnostic Output & Real-Time Alert Logs:</div>
+          <div class="json-output" id="pentest-output">Run a test payload to see double-layer security analysis results...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: AUDIT LOGS -->
+    <div id="logs-tab" class="tab-panel">
+      <div class="card">
+        <div class="card-title">
+          <span>Security Audit & CloudWatch Alert Logs</span>
+          <button class="btn btn-primary btn-sm" onclick="fetchAuditLogs()">🔄 Fetch Latest Logs</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Source IP</th>
+                <th>Status</th>
+                <th>Query / Event Metadata</th>
+              </tr>
+            </thead>
+            <tbody id="logs-table-body">
+              <tr>
+                <td colspan="5" style="text-align:center; color:var(--text-muted);">Loading security audit logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+{
+  "info": {
+    "_postman_id": "a9b1c2d3-e4f5-6789-abcd-ef0123456789",
+    "name": "SecureVault AntiGravity API Suite",
+    "description": "Postman Collection for testing SecureVault Double-Layer Security, Capability Tokens, AES-256-GCM Encryption, and SQL Injection Pen-Test Sandbox.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "1. Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"alice_sec\",\n  \"email\": \"alice@securevault.io\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "2. Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"alice_sec\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "3. Data - Fetch Decrypted PII",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/data",
+          "host": ["{{baseUrl}}"],
+          "path": ["data"]
+        }
+      }
+    },
+    {
+      "name": "4. Capability - Generate Token (HMAC 5min)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwtToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/capability/generate",
+          "host": ["{{baseUrl}}"],
+          "path": ["capability", "generate"]
+        }
+      }
+    },
+    {
+      "name": "5. Pen-Test Sandbox - SQL Injection Blocked by WAF",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Capability-Token", "value": "{{capabilityToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"payload\": \"' OR '1'='1\",\n  \"simulateParameterization\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/test/inject",
+          "host": ["{{baseUrl}}"],
+          "path": ["test", "inject"]
+        }
+      }
+    },
+    {
+      "name": "6. Pen-Test Sandbox - UNION Exfiltration Attack",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Capability-Token", "value": "{{capabilityToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"payload\": \"UNION SELECT username, encrypted_password FROM users--\",\n  \"simulateParameterization\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/test/inject",
+          "host": ["{{baseUrl}}"],
+          "path": ["test", "inject"]
+        }
+      }
+    },
+    {
+      "name": "7. Security Logs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/logs",
+          "host": ["{{baseUrl}}"],
+          "path": ["logs"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001" },
+    { "key": "jwtToken", "value": "" },
+    { "key": "capabilityToken", "value": "" }
+  ]
+}
